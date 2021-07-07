@@ -20,7 +20,8 @@ Create -->
 // Escolha um filme a lista aqui representa um db
 const lista = ["senhor dos aneis", "harry porter"];
 app.get("/filmes", function (req, res) {
-  res.send(lista);
+  //um filtro caso os primeiros itens sejam removidos  ou não existam para nao aparecer null
+  res.send(lista.filter(Boolean));
 });
 
 // [get] read id/index
