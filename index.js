@@ -19,12 +19,13 @@ const { MongoClient, ObjectId } = require("mongodb");
     res.send("Hello World");
   });
   // Escolha um filme a lista aqui representa um db
-  const lista = ["senhor dos aneis", "harry porter"];
-  const filmes = db.collections("filmes");
 
+  const filmes = db.collection("filmes");
+
+  // [GET] - Read All
   app.get("/filmes", async (req, res) => {
     const listaFilmes = await filmes.find().toArray();
-    //um filtro caso os primeiros itens sejam removidos  ou não existam para nao aparecer null
+
     res.send(listaFilmes);
   });
 
