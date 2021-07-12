@@ -1,24 +1,54 @@
+require("dotenv").config();
 const express = require("express");
-//configuração do mongodb
 const { MongoClient, ObjectId } = require("mongodb");
-(async () => {
-  const url = "mongodb://localhost:27017";
-  const dbname = "aulafilmes";
 
-  console.info("conectando ao banco de dados ....");
-  // retorno do promisse com await ele cumpre a promessa.
+(async () => {
+  const host = process.env.DB_HOST;
+  const user = process.env.DB_USER;
+  const pass = process.env.DB_PASS;
+  const dbName = process.env.DB_NAME;
+
+  const url = `mongodb+srv://${user}:${pass}@${host}/${dbName}?retryWrites=true&w=majority`;
+
+  console.info("Conectando ao banco de dados...");
+  //config para rodar na nuvem
   const client = await MongoClient.connect(url, { useUnifiedTopology: true });
-  console.info("conectado ao Mongo DB");
-  const db = client.db(dbname);
+
+  console.info("MongoDB conectado com sucesso!");
+  //config para rodar na nuvem
+  const db = client.db(dbName);
 
   const app = express();
-  // aqui informo ao express que no corpo ele vai isar json
+
+  // Informo ao Express que todo corpo
+  // de requisição será estruturado em JSON
   app.use(express.json());
 
   app.get("/hello", function (req, res) {
     res.send("Hello World");
   });
-  // Escolha um filme a lista aqui representa um db
+
+  /*
+    Lista de Endpoints CRUD
+    Create, Read (Single & All), Update, Delete
+    Criar, Ler (Individual & Tudo), Atualizar, Remover
+
+    Associamos os endpoints aos verbos de HTTP
+    Quando seguimos as convenções, utilizandos os verbos corretos,
+    podemos dizer que a nossa aplicação segue os padrões REST
+    Quando uma aplicação segue os padrões REST, ela é chamada de RESTful
+    [POST] -> Create
+    [GET] -> Read
+    [PUT/PATCH] -> Update
+    [DELETE] -> Delete
+    */
+
+  // Resumo dos endpoints:
+  // [POST] - /filmes -> Adicionar um elemento
+  // [GET] - /filmes/:id -> Ler um único elemento
+  // [GET] - /filmes -> Let todos os elementos
+  // [PUT] - /filmes/:id -> Alterar um único elemento
+  // [DELETE] - /filmes/:id -> Apagar um único elemento
 
   const filmes = db.collection("filmes");
 
@@ -29,53 +59,43 @@ const { MongoClient, ObjectId } = require("mongodb");
     res.send(listaFilmes);
   });
 
-  // [get] read id/index
-  // com arrow function que e a mesma coisa
+  // [GET] - Read Single (ou Read by ID/Index)
   app.get("/filmes/:id", async (req, res) => {
     const id = req.params.id;
-    //pelo mongoDb
+
     const item = await filmes.findOne({ _id: ObjectId(id) });
+
     res.send(item);
   });
 
-  // [post] -create
-  //quando quero criar ou atualizar sempre passo no body usando json
+  // [POST] - Create
   app.post("/filmes", async (req, res) => {
     const item = req.body;
+
     await filmes.insertOne(item);
+
     res.send(item);
   });
 
-  // [Put/patch] - Update
+  // [PUT] - Update
   app.put("/filmes/:id", async (req, res) => {
     const id = req.params.id;
+
     const item = req.body;
+
     await filmes.updateOne({ _id: ObjectId(id) }, { $set: item });
+
     res.send(item);
   });
 
-  // [delete] - delete
+  // [DELETE] - Delete
   app.delete("/filmes/:id", async (req, res) => {
     const id = req.params.id;
+
     await filmes.deleteOne({ _id: ObjectId(id) });
+
     res.send("Item removido com sucesso.");
   });
-
-  //no geral usando ID eu vou alterar unico elemento.
-  app.listen(3000);
-
-  // return Promise.reject("Oops!").catch((err) => {
-  //   throw new Error(err);
-  // });
-})(); //Async
-
-/* lista de end-point CRUD
-  devemos seguir os verbos http
-  assim nossa aplicação segue o REST 
-  aplicações que seguem o Rest são chamadoas de restfull
-  Create -->
-  [post] -create 
-  [get] - read
-  [Put/patch] - Update
-  [delete] - delete
-  */
+  // na nuvem e preciso mudar isso
+  app.listen(process.env.PORT || 3000);
+})();
