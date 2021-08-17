@@ -1,0 +1,15 @@
+openapi: '3.0.2'
+info:
+  title: API BackendNode
+  version: '1.0'
+servers:
+  - url: https://backnodenuvem.herokuapp.com
+paths:
+  /filmes:
+    get:
+      description: 
+      responses:
+        '200':
+          description: OK
+
+
