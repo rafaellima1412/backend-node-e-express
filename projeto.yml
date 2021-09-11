@@ -5,6 +5,27 @@ info:
 servers:
   - url: https://backnodenuvem.herokuapp.com
 paths:
+  /filmes/:
+    post:
+      summary: Creates a new filme.
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: Post
+          description: The filme to create.
+          schema:
+            type: object
+            required:
+              - nome_filme
+            properties:
+              nome_filme:
+                type: string
+
+      responses:
+        201:
+          description: Created
+
   /filmes:
     get:
       description: Lista Dos Filmes
@@ -46,3 +67,5 @@ paths:
       responses:
         '200':
           description: OK
+
+    
