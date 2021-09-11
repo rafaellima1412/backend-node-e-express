@@ -1,15 +1,48 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: API BackendNode
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: https://backnodenuvem.herokuapp.com
 paths:
   /filmes:
     get:
-      description: 
+      description: Lista Dos Filmes
       responses:
         '200':
           description: OK
-
-
+          
+  /filmes/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The objectID.
+    # DELETE /users/{id} - uses a single ID.
+    # Reuses the {id} parameter definition from the path level.
+    delete:
+      summary: Deletes the filmes with the specified ID.
+      responses:
+        '204':
+          description: User was deleted.
+    # GET /users/id1,id2,id3 - uses one or more user IDs.
+    # Overrides the path-level {id} parameter.
+    get:
+      summary: Gets one or more filmes by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: A comma-separated list of filme IDs.
+          schema:
+            type: array
+            items:
+              type: string
+            minItems: 1
+          explode: false
+          style: simple
+      responses:
+        '200':
+          description: OK
