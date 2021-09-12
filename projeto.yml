@@ -8,20 +8,15 @@ paths:
   /filmes/:
     post:
       summary: Creates a new filme.
-      consumes:
-        - application/json
-      parameters:
-        - in: body
-          name: Post
-          description: The filme to create.
-          schema:
-            type: object
-            required:
-              - nome_filme
-            properties:
-              nome_filme:
-                type: string
-
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome_filme:
+                  type: string
       responses:
         201:
           description: Created
@@ -31,8 +26,8 @@ paths:
       description: Lista Dos Filmes
       responses:
         '200':
-          description: OK
-          
+          description: OK     
+           
   /filmes/{id}:
     parameters:
       - in: path

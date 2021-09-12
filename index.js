@@ -35,6 +35,7 @@ const { MongoClient, ObjectId } = require("mongodb");
         'Access-Control-Allow-Headers',
         'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization',
     );
+    
 
     next();
 });
@@ -70,6 +71,7 @@ const { MongoClient, ObjectId } = require("mongodb");
 
   // [GET] - Read All
   app.get("/filmes", async (req, res) => {
+    // find e do java traz tudo para a memoria do java objeto do banco
     const listaFilmes = await filmes.find().toArray();
 
     res.send(listaFilmes);
@@ -78,7 +80,7 @@ const { MongoClient, ObjectId } = require("mongodb");
   // [GET] - Read Single (ou Read by ID/Index)
   app.get("/filmes/:id", async (req, res) => {
     const id = req.params.id;
-
+    // findOne e do Mongo
     const item = await filmes.findOne({ _id: ObjectId(id) });
 
     res.send(item);
